@@ -1,0 +1,1 @@
+package com.saasquatch.intelligence.repository; import com.saasquatch.intelligence.entity.BuyingSignal; import org.springframework.data.jpa.repository.JpaRepository; import java.util.*; public interface BuyingSignalRepository extends JpaRepository<BuyingSignal,Long>{List<BuyingSignal> findByLeadId(Long leadId);}
