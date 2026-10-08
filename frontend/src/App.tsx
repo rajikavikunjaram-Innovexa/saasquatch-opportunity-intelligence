@@ -189,6 +189,7 @@ function Accounts({leads,open}:{leads:Lead[];open:(lead:Lead)=>void}){
         <label>ACCOUNT INSIGHT</label><h2>Group-level opportunity</h2>
         <div className="accountScore">{top?.opportunityScore||0}<small>/100 lead score</small></div>
         <div className="insightBlock"><span>ACCOUNT / GROUP STRATEGY</span><b>Land-and-expand</b><p>Start with the highest-scoring subsidiary, then use the corporate relationship to introduce an account-level conversation across the group.</p></div>
+        <div className="insightBlock"><span>WHO SHOULD YOU CONTACT?</span><b>{top?.contact || "Decision maker"}</b><p>{top?.title || "Senior decision maker"} at {top?.company || "the highest-priority subsidiary"} is the recommended first contact because this lead has the strongest opportunity score in the account group.</p><button className="contactButton" onClick={()=>top&&open(top)}>Open contact intelligence →</button></div>
         <div className="insightBlock"><span>OUTREACH PLAYBOOK</span><b>Lead with the strongest buying trigger</b><p>Reference growth, technology fit and the identified decision maker. Keep the first touch specific to the subsidiary before expanding to the parent account.</p></div>
         <div className="relatedList"><span className="listLabel">RELATED OPPORTUNITIES</span>{visible.map(l=><div className="related" key={l.leadId} onClick={()=>open(l)}><div><b>{l.company}</b><small>{l.title} · {band(l.opportunityScore)}</small></div><strong>{l.opportunityScore}</strong></div>)}</div>
       </section>
