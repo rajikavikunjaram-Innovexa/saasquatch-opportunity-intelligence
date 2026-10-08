@@ -1,0 +1,1 @@
+package com.saasquatch.intelligence.dto; public record ScoreBreakdown(int revenuePotential,int growth,int technologyFit,int decisionMaker,int industryFit,int corporateRelationship,int dataConfidence){}
