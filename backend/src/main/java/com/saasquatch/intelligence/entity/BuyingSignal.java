@@ -1,0 +1,3 @@
+package com.saasquatch.intelligence.entity;
+import jakarta.persistence.*;
+@Entity @Table(name="buying_signals") public class BuyingSignal { @Id @GeneratedValue(strategy=GenerationType.IDENTITY) private Long id; @ManyToOne(optional=false) private Lead lead; @Enumerated(EnumType.STRING) private SignalType type; private int weight; @Column(length=500) private String description; public Long getId(){return id;} public Lead getLead(){return lead;} public void setLead(Lead v){lead=v;} public SignalType getType(){return type;} public void setType(SignalType v){type=v;} public int getWeight(){return weight;} public void setWeight(int v){weight=v;} public String getDescription(){return description;} public void setDescription(String v){description=v;} }
