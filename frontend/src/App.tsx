@@ -12,14 +12,23 @@ type Lead={
 const API=import.meta.env.VITE_API_URL||"http://localhost:8080/api";
 
 const demo:Lead[]=Array.from({length:200},(_,i)=>{
-  const s=i<32?94:i<106?78:i<157?62:45;
-  const breakdown=s>=85
-    ? {revenuePotential:19,growth:17,technologyFit:16,decisionMaker:14,industryFit:13,corporateRelationship:i<3?6:0,dataConfidence:i<3?9:15}
-    : s>=70
-    ? {revenuePotential:17,growth:15,technologyFit:14,decisionMaker:12,industryFit:12,corporateRelationship:0,dataConfidence:8}
-    : s>=55
-    ? {revenuePotential:14,growth:12,technologyFit:10,decisionMaker:10,industryFit:9,corporateRelationship:0,dataConfidence:7}
-    : {revenuePotential:10,growth:8,technologyFit:8,decisionMaker:7,industryFit:6,corporateRelationship:0,dataConfidence:6};
+  const bandIndex=i<32?0:i<106?1:i<157?2:3;
+  const scoreSets=[[94,91,88,86,85],[84,81,78,74,71],[69,66,62,58,55],[52,49,45,43,41]];
+  const s=scoreSets[bandIndex][i%5];
+  const related=i<3;
+  const breakdown=related
+    ? [
+        {revenuePotential:19,growth:17,technologyFit:16,decisionMaker:14,industryFit:13,corporateRelationship:6,dataConfidence:9},
+        {revenuePotential:17,growth:17,technologyFit:16,decisionMaker:14,industryFit:13,corporateRelationship:6,dataConfidence:8},
+        {revenuePotential:15,growth:17,technologyFit:16,decisionMaker:14,industryFit:13,corporateRelationship:6,dataConfidence:7}
+      ][i]
+    : bandIndex===0
+    ? ({94:{revenuePotential:20,growth:18,technologyFit:17,decisionMaker:15,industryFit:14,corporateRelationship:0,dataConfidence:10},86:{revenuePotential:20,growth:17,technologyFit:16,decisionMaker:14,industryFit:13,corporateRelationship:0,dataConfidence:6},85:{revenuePotential:20,growth:17,technologyFit:16,decisionMaker:14,industryFit:13,corporateRelationship:0,dataConfidence:5}} as any)[s] || {revenuePotential:18,growth:17,technologyFit:16,decisionMaker:14,industryFit:13,corporateRelationship:0,dataConfidence:4}
+    : bandIndex===1
+    ? {revenuePotential:17,growth:15,technologyFit:14,decisionMaker:12,industryFit:12,corporateRelationship:0,dataConfidence:s-70}
+    : bandIndex===2
+    ? {revenuePotential:14,growth:12,technologyFit:10,decisionMaker:10,industryFit:9,corporateRelationship:0,dataConfidence:s-55}
+    : {revenuePotential:10,growth:8,technologyFit:8,decisionMaker:7,industryFit:6,corporateRelationship:0,dataConfidence:s-39};
   return {
     leadId:i+1,
     company:["Apex Commerce","Apex Payments","Northstar Labs","CloudWorks","Vertex Systems"][i%5],
@@ -37,7 +46,7 @@ const demo:Lead[]=Array.from({length:200},(_,i)=>{
       {type:"FUNDING",weight:12,description:"Recent capital activity suggests capacity for new initiatives."},
       {type:"HIRING_GROWTH",weight:10,description:"Hiring momentum indicates an active investment cycle."}
     ],
-    corporateRelationships:i<3?["SUBSIDIARY → Apex Holdings"]:[]
+    corporateRelationships:related?["SUBSIDIARY → Apex Holdings"]:[]
   };
 });
 
@@ -168,7 +177,7 @@ function Accounts({leads,open}:{leads:Lead[];open:(lead:Lead)=>void}){
   const visible=related.length?related:leads.filter(l=>l.corporateRelationships.length).slice(0,3);
   const nodes=[
     {id:"p",position:{x:340,y:25},data:{label:"APEX HOLDINGS\nACCOUNT GROUP"},style:{padding:"16px 24px",borderRadius:14,fontWeight:800,minWidth:210,textAlign:"center" as const,background:"#d9ff6a",color:"#07111f",border:"2px solid #efffb0",boxShadow:"0 10px 30px rgba(0,0,0,.25)"}},
-    ...visible.map((l,i)=>({id:String(l.leadId),position:{x:55+i*220,y:205},data:{label:l.company+"\n"+l.opportunityScore+" / 100"},style:{padding:"15px 18px",borderRadius:14,minWidth:175,textAlign:"center" as const,cursor:"pointer",background:"#10243a",color:"#edf2fa",border:"1px solid #3b5572",boxShadow:"0 8px 24px rgba(0,0,0,.22)"}}))
+    ...visible.map((l,i)=>({id:String(l.leadId),position:{x:55+i*220,y:205},data:{label:l.company+"\n"+l.opportunityScore+" / 100"},style:{padding:"15px 18px",borderRadius:14,minWidth:175,textAlign:"center" as const,cursor:"pointer",background:"#10243a",color:"#ffffff",fontSize:14,fontWeight:800,lineHeight:1.45,whiteSpace:"pre-line" as const,border:"1px solid #d9ff6a",boxShadow:"0 8px 24px rgba(0,0,0,.22)"}}))
   ];
   const edges=visible.map(l=>({id:"e"+l.leadId,source:"p",target:String(l.leadId),label:"SUBSIDIARY",animated:true,style:{stroke:"#7f93ad"},labelStyle:{fill:"#8ea0b7",fontSize:10,fontWeight:700}}));
   const onNodeClick:NodeMouseHandler=(_,node)=>{
