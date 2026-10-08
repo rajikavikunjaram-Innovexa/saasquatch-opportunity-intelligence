@@ -1,0 +1,1 @@
+package com.saasquatch.intelligence.repository; import com.saasquatch.intelligence.entity.Company; import org.springframework.data.jpa.repository.JpaRepository; public interface CompanyRepository extends JpaRepository<Company,Long>{}
