@@ -4,7 +4,7 @@ import "@xyflow/react/dist/style.css";
 import "./styles.css";
 
 type Lead={
-  leadId:number; company:string; contact:string; title:string; opportunityScore:number;
+  leadId:number; company:string; contact:string; title:string; contactEmail?:string; opportunityScore:number;
   whyNow:string; nextBestAction:string; dataConfidence:number; scoreBreakdown:any;
   signals:any[]; corporateRelationships:string[];
 };
@@ -34,6 +34,7 @@ const demo:Lead[]=Array.from({length:200},(_,i)=>{
     company:["Apex Commerce","Apex Payments","Northstar Labs","CloudWorks","Vertex Systems"][i%5],
     contact:"Decision Maker "+(i+1),
     title:i%2?"VP Engineering":"CTO",
+    contactEmail:"decisionmaker"+(i+1)+"@"+["apexcommerce","apexpayments","northstarlabs","cloudworks","vertexsystems"][i%5]+".demo",
     opportunityScore:s,
     whyNow:s>=85?"Strong growth and technology fit indicate a timely opportunity.":s>=70?"Relevant fit signals make this account worth targeted outreach.":"Monitor for a stronger trigger.",
     nextBestAction:s>=85?"Contact decision maker today.":s>=70?"Send personalized outreach within 48 hours.":"Add to nurture.",
@@ -147,7 +148,7 @@ function Intelligence({lead}:{lead:Lead}){
   return <main>
     <section className="hero"><div><label>LEAD INTELLIGENCE</label><h1>{lead.company}</h1><p>{lead.contact} · {lead.title}</p></div><div className="big">{lead.opportunityScore}<small>/100</small></div></section>
     <div className="columns">
-      <section className="panel">
+      <section className="panel"><div className="contactLeadCard"><label>CONTACT</label><h2>{lead.contact}</h2><p>{lead.title} · {lead.company}</p><div className="contactEmail"><span>DEMO EMAIL</span><b>{lead.contactEmail || "decisionmaker@account.demo"}</b><button className="copyButton" onClick={()=>lead.contactEmail&&navigator.clipboard?.writeText(lead.contactEmail)}>Copy email</button></div></div>
         <label>WHY NOW</label><h2>{lead.whyNow}</h2>
         <div className="action"><label>NEXT BEST ACTION</label><b>{lead.nextBestAction}</b></div>
         <label>BUYING SIGNALS</label>
@@ -198,7 +199,7 @@ function Accounts({leads,open}:{leads:Lead[];open:(lead:Lead)=>void}){
         <label>ACCOUNT INSIGHT</label><h2>Group-level opportunity</h2>
         <div className="accountScore">{top?.opportunityScore||0}<small>/100 lead score</small></div>
         <div className="insightBlock"><span>ACCOUNT / GROUP STRATEGY</span><b>Land-and-expand</b><p>Start with the highest-scoring subsidiary, then use the corporate relationship to introduce an account-level conversation across the group.</p></div>
-        <div className="insightBlock"><span>WHO SHOULD YOU CONTACT?</span><b>{top?.contact || "Decision maker"}</b><p>{top?.title || "Senior decision maker"} at {top?.company || "the highest-priority subsidiary"} is the recommended first contact because this lead has the strongest opportunity score in the account group.</p><button className="contactButton" onClick={()=>top&&open(top)}>Open contact intelligence →</button></div>
+        <div className="contactCard"><div className="contactCardTop"><div><span>RECOMMENDED CONTACT</span><b>{top?.contact || "Decision maker"}</b><p>{top?.title || "Senior decision maker"} · {top?.company || "Priority account"}</p></div><strong>{top?.opportunityScore || 0}<small>/100</small></strong></div><div className="contactEmail"><span>DEMO EMAIL</span><b>{top?.contactEmail || "decisionmaker@account.demo"}</b><button className="copyButton" onClick={()=>top?.contactEmail&&navigator.clipboard?.writeText(top.contactEmail)}>Copy email</button></div><p className="contactReason">Recommended because this contact is the identified decision maker on the highest-scoring opportunity in the account group.</p><button className="contactButton" onClick={()=>top&&open(top)}>Open contact intelligence →</button></div>
         <div className="insightBlock"><span>OUTREACH PLAYBOOK</span><b>Lead with the strongest buying trigger</b><p>Reference growth, technology fit and the identified decision maker. Keep the first touch specific to the subsidiary before expanding to the parent account.</p></div>
         <div className="relatedList"><span className="listLabel">RELATED OPPORTUNITIES</span>{visible.map(l=><div className="related" key={l.leadId} onClick={()=>open(l)}><div><b>{l.company}</b><small>{l.title} · {band(l.opportunityScore)}</small></div><strong>{l.opportunityScore}</strong></div>)}</div>
       </section>
