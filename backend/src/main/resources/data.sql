@@ -1,7 +1,3 @@
-DELETE FROM corporate_relationships;
-DELETE FROM buying_signals;
-DELETE FROM leads;
-DELETE FROM companies;
 INSERT INTO companies(id,name,domain,industry,employee_count,estimated_revenue_millions,growth_rate,technology_stack,verified) VALUES (1,'Northstar Labs','demo-1.example','Technology',5000,120,38,'AWS, Spring Boot, Java, Kafka',true);
 INSERT INTO leads(id,company_id,title,contact_name,contact_email,seniority,decision_maker,data_confidence) VALUES (1,1,'VP Engineering','Contact 1','contact1@example.com','VP Engineering',true,94);
 INSERT INTO buying_signals(id,lead_id,type,weight,description) VALUES (1,1,'COMPANY_GROWTH',18,'Growth and hiring activity create a timing trigger.'),(2,1,'TECHNOLOGY_FIT',17,'Technology environment aligns with the target profile.'),(3,1,'DECISION_MAKER',15,'Senior decision maker identified.');
