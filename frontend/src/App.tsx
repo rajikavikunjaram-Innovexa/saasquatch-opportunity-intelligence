@@ -196,7 +196,7 @@ export default function App() {
                 </div>
                 <div className="signals">
                   {lead.signals.slice(0, 3).map((signal) => (
-                    <em key={signal.type}>{signal.type.replaceAll("_", " ")}</em>
+                    <em key={signal.type}>{signal.type.replace(/_/g, " ")}</em>
                   ))}
                 </div>
                 <div className="confidence">Confidence {lead.dataConfidence}%</div>
@@ -246,7 +246,7 @@ export default function App() {
             <h3>Signals</h3>
             {selected.signals.map((signal) => (
               <div className="signal" key={signal.type}>
-                <b>{signal.type.replaceAll("_", " ")}</b>
+                <b>{signal.type.replace(/_/g, " ")}</b>
                 <span>+{signal.weight}</span>
                 <small>{signal.description}</small>
               </div>
