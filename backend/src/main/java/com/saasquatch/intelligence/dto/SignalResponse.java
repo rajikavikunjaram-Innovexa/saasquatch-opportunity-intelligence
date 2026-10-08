@@ -1,0 +1,1 @@
+package com.saasquatch.intelligence.dto; public record SignalResponse(String type,int weight,String description){}
