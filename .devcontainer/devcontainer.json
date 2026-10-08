@@ -1,0 +1,1 @@
+{"name":"SaaSquatch Opportunity Intelligence","image":"mcr.microsoft.com/devcontainers/java:17","features":{"ghcr.io/devcontainers/features/node:1":{"version":"20"}},"forwardPorts":[8080,5173],"postCreateCommand":"cd backend && mvn -q test && cd ../frontend && npm install && npm run build"}
