@@ -1,0 +1,1 @@
+package com.saasquatch.intelligence.entity; public enum SignalType { FUNDING,HIRING_GROWTH,TECHNOLOGY_FIT,DECISION_MAKER,CORPORATE_RELATIONSHIP,MARKET_EXPANSION }
