@@ -11,5 +11,7 @@ spring:
   sql:
     init:
       mode: always
+      continue-on-error: false
+      defer-datasource-initialization: true
 server:
   port: ${PORT:8080}
