@@ -1,0 +1,1 @@
+package com.saasquatch.intelligence.repository; import com.saasquatch.intelligence.entity.*; import org.springframework.data.jpa.repository.JpaRepository; import java.util.*; public interface CorporateRelationshipRepository extends JpaRepository<CorporateRelationship,Long>{List<CorporateRelationship> findByCompanyId(Long companyId);}
