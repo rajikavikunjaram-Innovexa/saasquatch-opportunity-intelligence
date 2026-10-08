@@ -32,7 +32,10 @@ const demo:Lead[]=Array.from({length:200},(_,i)=>{
     scoreBreakdown:breakdown,
     signals:[
       {type:"COMPANY_GROWTH",weight:18,description:"Growth and hiring activity create a timing trigger."},
-      {type:"TECHNOLOGY_FIT",weight:17,description:"Technology environment aligns with the target profile."}
+      {type:"TECHNOLOGY_FIT",weight:17,description:"Technology environment aligns with the target profile."},
+      {type:"DECISION_MAKER",weight:15,description:"Senior decision maker identified for direct outreach."},
+      {type:"FUNDING",weight:12,description:"Recent capital activity suggests capacity for new initiatives."},
+      {type:"HIRING_GROWTH",weight:10,description:"Hiring momentum indicates an active investment cycle."}
     ],
     corporateRelationships:i<3?["SUBSIDIARY → Apex Holdings"]:[]
   };
@@ -152,23 +155,43 @@ function Intelligence({lead}:{lead:Lead}){
 }
 
 function Accounts({leads,open}:{leads:Lead[];open:(lead:Lead)=>void}){
-  const related=leads.filter(l=>l.corporateRelationships.length).slice(0,3);
+  const [related,setRelated]=useState<Lead[]>([]);
+  useEffect(()=>{
+    fetch(API+"/accounts/201/relationships")
+      .then(r=>r.ok?r.json():Promise.reject())
+      .then(data=>{
+        const mapped=(data.relatedCompanies||[]).map((c:any)=>leads.find(l=>l.company===c.companyName)).filter(Boolean) as Lead[];
+        if(mapped.length) setRelated(mapped);
+      })
+      .catch(()=>{});
+  },[leads]);
+  const visible=related.length?related:leads.filter(l=>l.corporateRelationships.length).slice(0,3);
   const nodes=[
-    {id:"p",position:{x:300,y:30},data:{label:"APEX HOLDINGS"},style:{padding:16,borderRadius:12,fontWeight:700,minWidth:160,textAlign:"center" as const}},
-    ...related.map((l,i)=>({id:String(l.leadId),position:{x:60+i*230,y:190},data:{label:l.company+" · "+l.opportunityScore},style:{padding:14,borderRadius:12,minWidth:150,textAlign:"center" as const,cursor:"pointer"}}))
+    {id:"p",position:{x:340,y:25},data:{label:"APEX HOLDINGS\nACCOUNT GROUP"},style:{padding:"16px 24px",borderRadius:14,fontWeight:800,minWidth:210,textAlign:"center" as const,background:"#d9ff6a",color:"#07111f",border:"2px solid #efffb0",boxShadow:"0 10px 30px rgba(0,0,0,.25)"}},
+    ...visible.map((l,i)=>({id:String(l.leadId),position:{x:55+i*220,y:205},data:{label:l.company+"\n"+l.opportunityScore+" / 100"},style:{padding:"15px 18px",borderRadius:14,minWidth:175,textAlign:"center" as const,cursor:"pointer",background:"#10243a",color:"#edf2fa",border:"1px solid #3b5572",boxShadow:"0 8px 24px rgba(0,0,0,.22)"}}))
   ];
-  const edges=related.map(l=>({id:"e"+l.leadId,source:"p",target:String(l.leadId),label:"SUBSIDIARY"}));
-  const onNodeClick:NodeMouseHandler=(event,node)=>{
+  const edges=visible.map(l=>({id:"e"+l.leadId,source:"p",target:String(l.leadId),label:"SUBSIDIARY",animated:true,style:{stroke:"#7f93ad"},labelStyle:{fill:"#8ea0b7",fontSize:10,fontWeight:700}}));
+  const onNodeClick:NodeMouseHandler=(_,node)=>{
     if(node.id!=="p"){
-      const lead=leads.find(l=>String(l.leadId)===node.id);
+      const lead=visible.find(l=>String(l.leadId)===node.id);
       if(lead) open(lead);
     }
   };
+  const top=visible[0];
   return <main>
-    <section className="hero"><div><label>CORPORATE INTELLIGENCE</label><h1>See the account, not just the lead.</h1><p>Click any subsidiary to open its full Lead Intelligence view.</p></div></section>
-    <div className="columns">
-      <section className="panel graph"><ReactFlow nodes={nodes} edges={edges} fitView onNodeClick={onNodeClick}><Background/><Controls/></ReactFlow></section>
-      <section className="panel"><label>ACCOUNT INSIGHT</label><h2>{related.length} related opportunities detected</h2><div className="accountScore">{related[0]?.opportunityScore||0}</div><p>Recommended strategy</p><b>Account-level outreach</b>{related.map(l=><div className="related" key={l.leadId} onClick={()=>open(l)}><span>{l.company}</span><b>{l.opportunityScore}</b></div>)}</section>
+    <section className="hero"><div><label>CORPORATE INTELLIGENCE</label><h1>See the account, not just the lead.</h1><p>Map corporate relationships, compare subsidiary opportunities, and move from account strategy to lead-level action.</p></div><div className="accountBadge">{visible.length} RELATED OPPORTUNITIES</div></section>
+    <div className="accountLayout">
+      <section className="panel graphPanel">
+        <div className="graphTitle"><div><label>RELATIONSHIP MAP</label><h2>Account group structure</h2></div><span>Click a subsidiary</span></div>
+        <div className="graph"><ReactFlow nodes={nodes} edges={edges} fitView fitViewOptions={{padding:0.22}} onNodeClick={onNodeClick}><Background gap={22} size={1}/><Controls/></ReactFlow></div>
+      </section>
+      <section className="panel accountPanel">
+        <label>ACCOUNT INSIGHT</label><h2>Group-level opportunity</h2>
+        <div className="accountScore">{top?.opportunityScore||0}<small>/100 lead score</small></div>
+        <div className="insightBlock"><span>ACCOUNT / GROUP STRATEGY</span><b>Land-and-expand</b><p>Start with the highest-scoring subsidiary, then use the corporate relationship to introduce an account-level conversation across the group.</p></div>
+        <div className="insightBlock"><span>OUTREACH PLAYBOOK</span><b>Lead with the strongest buying trigger</b><p>Reference growth, technology fit and the identified decision maker. Keep the first touch specific to the subsidiary before expanding to the parent account.</p></div>
+        <div className="relatedList"><span className="listLabel">RELATED OPPORTUNITIES</span>{visible.map(l=><div className="related" key={l.leadId} onClick={()=>open(l)}><div><b>{l.company}</b><small>{l.title} · {band(l.opportunityScore)}</small></div><strong>{l.opportunityScore}</strong></div>)}</div>
+      </section>
     </div>
   </main>;
 }
