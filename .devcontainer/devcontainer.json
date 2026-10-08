@@ -1,1 +1,27 @@
-{"name":"SaaSquatch Opportunity Intelligence","image":"mcr.microsoft.com/devcontainers/java:17","features":{"ghcr.io/devcontainers/features/node:1":{"version":"20"}},"forwardPorts":[8080,5173],"postCreateCommand":"cd backend && mvn -q test && cd ../frontend && npm install && npm run build"}
+{
+  "name": "SaaSquatch Opportunity Intelligence",
+  "image": "mcr.microsoft.com/devcontainers/java:17",
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "20"
+    }
+  },
+  "forwardPorts": [
+    8080,
+    5173
+  ],
+  "portsAttributes": {
+    "5173": {
+      "label": "Web application",
+      "onAutoForward": "openPreview"
+    },
+    "8080": {
+      "label": "API"
+    }
+  },
+  "postCreateCommand": "cd backend && mvn -q test && cd ../frontend && npm install && npm run build",
+  "postAttachCommand": {
+    "backend": "bash -lc 'if ! curl -sf http://localhost:8080/api/health >/dev/null 2>&1; then (cd backend && nohup mvn -q spring-boot:run >/tmp/saasquatch-backend.log 2>&1 &) ; fi'",
+    "frontend": "bash -lc 'if ! curl -sf http://localhost:5173 >/dev/null 2>&1; then (cd frontend && nohup npm run dev -- --host 0.0.0.0 >/tmp/saasquatch-frontend.log 2>&1 &) ; fi'"
+  }
+}
