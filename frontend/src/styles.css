@@ -7,7 +7,7 @@
 .graphTitle>span{font-size:10px;letter-spacing:.12em;color:#d9ff6a;font-weight:800}
 .graph{height:510px;background:radial-gradient(circle at 50% 30%,#10233a 0,#091422 55%,#07111f 100%)}
 .graph .react-flow__node{font-family:Inter,system-ui}
-.graph .react-flow__edge-text{fill:#8ea0b7}
+.graph .react-flow__edge-text{fill:#ffffff;font-weight:800}.graph .react-flow__edge-textbg{fill:#07111f;opacity:.9}
 .graph .react-flow__controls{box-shadow:none;border:1px solid #26384f}
 .graph .react-flow__controls-button{background:#0b1727;border-color:#26384f;color:#edf2fa}
 .accountPanel{padding:24px}
