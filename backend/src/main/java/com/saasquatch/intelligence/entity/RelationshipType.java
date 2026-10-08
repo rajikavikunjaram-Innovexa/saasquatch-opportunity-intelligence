@@ -1,0 +1,1 @@
+package com.saasquatch.intelligence.entity; public enum RelationshipType { PARENT,SUBSIDIARY,ACQUISITION,RELATED }
