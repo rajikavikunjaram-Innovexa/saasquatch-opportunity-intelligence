@@ -1,0 +1,3 @@
+package com.saasquatch.intelligence.entity;
+import jakarta.persistence.*;
+@Entity @Table(name="contacts") public class Contact { @Id @GeneratedValue(strategy=GenerationType.IDENTITY) private Long id; @ManyToOne(optional=false) private Company company; private String name; private String title; private String email; public Long getId(){return id;} public Company getCompany(){return company;} public void setCompany(Company v){company=v;} public String getName(){return name;} public void setName(String v){name=v;} public String getTitle(){return title;} public void setTitle(String v){title=v;} public String getEmail(){return email;} public void setEmail(String v){email=v;} }
