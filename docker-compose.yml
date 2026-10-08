@@ -1,0 +1,23 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: saasquatch
+      POSTGRES_USER: saasquatch
+      POSTGRES_PASSWORD: saasquatch
+    volumes: [pgdata:/var/lib/postgresql/data]
+  backend:
+    build: ./backend
+    environment:
+      DB_URL: jdbc:postgresql://db:5432/saasquatch
+      DB_USER: saasquatch
+      DB_PASSWORD: saasquatch
+      DB_DRIVER: org.postgresql.Driver
+    ports: ["8080:8080"]
+    depends_on: [db]
+  frontend:
+    build: ./frontend
+    ports: ["5173:80"]
+    depends_on: [backend]
+volumes:
+  pgdata:
