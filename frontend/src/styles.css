@@ -24,3 +24,4 @@
 .related small{display:block;color:#718199;margin-top:4px}
 .related strong{font-size:20px;color:#d9ff6a}
 @media(max-width:900px){.accountLayout{display:block}.graph{height:430px}.accountBadge{margin-top:14px;display:inline-block}}
+.contactButton{margin-top:11px;background:#d9ff6a;color:#07111f;border:0;border-radius:8px;padding:9px 12px;font:inherit;font-size:10px;font-weight:800;cursor:pointer}.contactButton:hover{filter:brightness(1.05)}
